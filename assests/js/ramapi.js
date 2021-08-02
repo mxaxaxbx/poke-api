@@ -1,21 +1,24 @@
 const limit = 20;
 let offset = 20;
+let count = 0;
 
 const getData = (limit=0, offset=0) => {
-    console.log('l', limit);
-    console.log('f', offset);
     
     return fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
         .then( (response) => response.json() )
         .then( (json) => {
             llenarDatos( json.results );
+            setCount( json.count );
             paginacion(json.next, json.previous );
-            console.log(json);
         })
         .catch( (error) => {
             console.log("Error", error);
         });
 };
+
+const setCount = (c=0) => {
+    count = c;
+}
 
 const llenarDatos = ( data =[] ) => {
     let html = '';
@@ -42,6 +45,9 @@ const paginacion = ( next='', prev='' ) => {
     
     if( offset === 20 ) prevDisabled = "disabled";
     else prevDisabled = "";
+
+    if( offset >= count ) nextDisabled = "disabled";
+    else nextDisabled = "";
 
     let html = "";
 
